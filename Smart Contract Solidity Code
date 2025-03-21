@@ -1,0 +1,29 @@
+pragma solidity ^0.8.0;
+
+contract ImageRegistry {
+    struct Image {
+        string imageHash;
+        string metadata;
+        address owner;
+    }
+
+    mapping(string => Image) public imageRegistry;
+
+    event ImageRegistered(string imageHash, string metadata, address indexed owner);
+    event OwnershipTransferred(string imageHash, address indexed newOwner);
+
+    function registerImage(string memory imageHash, string memory metadata) public {
+        imageRegistry[imageHash] = Image(imageHash, metadata, msg.sender);
+        emit ImageRegistered(imageHash, metadata, msg.sender);
+    }
+
+    function transferOwnership(string memory imageHash, address newOwner) public {
+        require(msg.sender == imageRegistry[imageHash].owner, "Only the owner can transfer ownership");
+        imageRegistry[imageHash].owner = newOwner;
+        emit OwnershipTransferred(imageHash, newOwner);
+    }
+
+    function getImageDetails(string memory imageHash) public view returns (string memory, string memory, address) {
+        return (imageRegistry[imageHash].imageHash, imageRegistry[imageHash].metadata, imageRegistry[imageHash].owner);
+    }
+}
