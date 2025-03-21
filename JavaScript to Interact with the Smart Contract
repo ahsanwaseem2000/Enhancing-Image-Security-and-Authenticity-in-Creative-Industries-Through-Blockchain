@@ -1,0 +1,25 @@
+const Web3 = require('web3');
+const web3 = new Web3('http://localhost:7545'); // Ganache local network
+
+const contractABI = [/* ABI from Solidity contract */];
+const contractAddress = '0xYourContractAddress';
+
+const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+// Register an image
+async function registerImage(imageHash, metadata) {
+    const accounts = await web3.eth.getAccounts();
+    await contract.methods.registerImage(imageHash, metadata).send({ from: accounts[0] });
+}
+
+// Transfer ownership of an image
+async function transferOwnership(imageHash, newOwner) {
+    const accounts = await web3.eth.getAccounts();
+    await contract.methods.transferOwnership(imageHash, newOwner).send({ from: accounts[0] });
+}
+
+// Get image details
+async function getImageDetails(imageHash) {
+    const details = await contract.methods.getImageDetails(imageHash).call();
+    console.log(details);
+}
